@@ -33,6 +33,7 @@ phases:
 
 artifacts:
   files:
-    - app.zip
-    - appspec.yml
-  discard-paths: yes
+     - 'index.html'          
+     - 'appspec.yml' 
+     - 'scripts/**'
+  
