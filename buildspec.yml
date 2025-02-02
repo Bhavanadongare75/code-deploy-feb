@@ -1,0 +1,38 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18 # Change as per your application
+    commands:
+      - echo "Installing dependencies..."
+      - npm install # Change this if you're using a different build tool
+
+  pre_build:
+    commands:
+      - echo "Running tests..."
+      - npm test # Modify this based on your test framework
+
+  build:
+    commands:
+      - echo "Building the application..."
+      - npm run build # Change as needed for your application
+
+  post_build:
+    commands:
+      - echo "Zipping the application for deployment..."
+      - zip -r app.zip * .[^.]* # Archive everything including hidden files
+      - echo "Generating appspec.yml for CodeDeploy..."
+      - cp appspec.yml ./appspec.yml
+      - echo "Uploading artifacts to S3..."
+      - aws s3 cp app.zip s3://your-deployment-bucket/app.zip
+      - echo "Creating the revision for CodeDeploy..."
+      - aws deploy push --application-name YourAppName \
+        --s3-location s3://your-deployment-bucket/app.zip \
+        --source .
+
+artifacts:
+  files:
+    - app.zip
+    - appspec.yml
+  discard-paths: yes
