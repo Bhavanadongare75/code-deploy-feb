@@ -1,20 +1,18 @@
 #!/bin/bash
 
-# Grant execute permissions to this script (not necessary if already executed)
-chmod +x /home/ubuntu/scripts/setup_nginx.sh
+# Update and install Nginx
+sudo apt update -y
+sudo apt install nginx -y
 
-# Install Nginx
-apt update
-apt install -y nginx
+# Start and enable Nginx service
+sudo systemctl start nginx
+sudo systemctl enable nginx
 
-# Start Nginx and enable it to run on boot
-systemctl start nginx
-systemctl enable nginx 
+# Create a web root directory if it doesn't exist
+sudo mkdir -p /var/www/html
 
-# Ensure Nginx is running
-if systemctl status nginx | grep "active (running)"; then
-    echo "Nginx is running."
-else
-    echo "Failed to start Nginx."
-    exit 1  # Exit with an error code if Nginx fails to start
-fi
+# Set the correct permissions
+sudo chown -R www-data:www-data /var/www/html
+
+# Restart Nginx to apply changes
+sudo systemctl restart nginx
